@@ -1,0 +1,35 @@
+# Compiled class files
+/target/
+*.class
+
+# Maven
+/logs/
+*.log
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.swp
+*.swo
+
+# Ignore zchart.txt in target (copied resource)
+target/zchart.txt
