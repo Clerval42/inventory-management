@@ -27,20 +27,44 @@ public class ZChartLookupTable {
     }
 
     public double getZForServiceLevel(double serviceLevel) {
-        var entry = serviceToZ.floorEntry(serviceLevel);
-        if (entry == null) {
-            // If below minimum, return the lowest z in the table
-            return serviceToZ.firstEntry().getValue();
+        var lower = serviceToZ.floorEntry(serviceLevel);
+        var upper = serviceToZ.ceilingEntry(serviceLevel);
+        if (lower == null && upper == null) {
+            throw new IllegalArgumentException("No entries in z-table for service level: " + serviceLevel);
+        } else if (lower == null) {
+            return upper.getValue();
+        } else if (upper == null) {
+            return lower.getValue();
+        } else if (lower.getKey().equals(upper.getKey())) {
+            return lower.getValue();
+        } else {
+            // Linear interpolation
+            double x0 = lower.getKey();
+            double y0 = lower.getValue();
+            double x1 = upper.getKey();
+            double y1 = upper.getValue();
+            return y0 + (serviceLevel - x0) * (y1 - y0) / (x1 - x0);
         }
-        return entry.getValue();
     }
 
     public double getLossFunctionValue(double z) {
-        var entry = zToL.floorEntry(z);
-        if (entry == null) {
-            // If below minimum, return the lowest L(z) in the table
-            return zToL.firstEntry().getValue();
+        var lower = zToL.floorEntry(z);
+        var upper = zToL.ceilingEntry(z);
+        if (lower == null && upper == null) {
+            throw new IllegalArgumentException("No entries in loss function table for z: " + z);
+        } else if (lower == null) {
+            return upper.getValue();
+        } else if (upper == null) {
+            return lower.getValue();
+        } else if (lower.getKey().equals(upper.getKey())) {
+            return lower.getValue();
+        } else {
+            // Linear interpolation
+            double x0 = lower.getKey();
+            double y0 = lower.getValue();
+            double x1 = upper.getKey();
+            double y1 = upper.getValue();
+            return y0 + (z - x0) * (y1 - y0) / (x1 - x0);
         }
-        return entry.getValue();
     }
 }
